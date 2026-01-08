@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Kali Linux + Whonix Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #00ff41;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid #00ff41;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #4a9eff;
+            font-size: 1.2em;
+        }
+
+        h2 {
+            color: #4a9eff;
+            font-size: 1.8em;
+            margin: 30px 0 15px;
+            padding-left: 15px;
+            border-left: 5px solid #4a9eff;
+        }
+
+        h3 {
+            color: #ff6b6b;
+            font-size: 1.3em;
+            margin: 20px 0 10px;
+        }
+
+        .step {
+            background: rgba(74, 158, 255, 0.1);
+            border-left: 4px solid #4a9eff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #00ff41;
+            color: #0a0e27;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .command {
+            background: #0a0e27;
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: #00ff41;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .command::before {
+            content: "$ ";
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .config-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid #ff6b6b;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .config-item {
+            padding: 8px 0;
+            border-bottom: 1px dashed #4a9eff;
+        }
+
+        .config-item:last-child {
+            border-bottom: none;
+        }
+
+        .config-label {
+            color: #ffd700;
+            font-weight: bold;
+            display: inline-block;
+            width: 200px;
+        }
+
+        .config-value {
+            color: #00ff41;
+        }
+
+        .warning {
+            background: rgba(255, 107, 107, 0.2);
+            border-left: 5px solid #ff6b6b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning::before {
+            content: "⚠️ ATENÇÃO: ";
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .success {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 5px solid #00ff41;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success::before {
+            content: "✓ SUCESSO: ";
+            color: #00ff41;
+            font-weight: bold;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 10px 0;
+            color: #d0d0d0;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .specs-table th {
+            background: #4a9eff;
+            color: #0a0e27;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .specs-table td {
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid #4a9eff;
+            padding: 10px;
+            color: #d0d0d0;
+        }
+
+        .specs-table tr:hover td {
+            background: rgba(74, 158, 255, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #00ff41;
+            color: #4a9eff;
+        }
+
+        .code-inline {
+            background: #0a0e27;
+            color: #00ff41;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        a {
+            color: #4a9eff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #00ff41;
+            text-decoration: underline;
+        }
+
+        .download-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #00ff41;
+            color: #0a0e27;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .download-btn:hover {
+            background: #4a9eff;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐉 KALI LINUX + WHONIX GATEWAY</h1>
+            <p class="subtitle">Tutorial Completo de Instalação e Configuração</p>
+        </header>
+
+        <!-- Introdução -->
+        <section>
+            <h2>📋 Introdução</h2>
+            <p>Este tutorial apresenta a configuração de um sistema de segurança avançado utilizando:</p>
+            <ul>
+                <li><strong>Host:</strong> Kali Linux (sistema principal)</li>
+                <li><strong>Virtualização:</strong> VirtualBox</li>
+                <li><strong>Gateway:</strong> Whonix Gateway (roteamento TOR)</li>
+                <li><strong>Workstation:</strong> Kali Linux virtualizado</li>
+            </ul>
+            
+            <div class="warning">
+                Este setup fornece uma camada adicional de anonimato, roteando todo o tráfego através da rede TOR. Use responsavelmente e apenas para propósitos legais.
+            </div>
+        </section>
+
+        <!-- Requisitos do Sistema -->
+        <section>
+            <h2>💻 Requisitos do Sistema</h2>
+            <table class="specs-table">
+                <thead>
+                    <tr>
+                        <th>Componente</th>
+                        <th>Mínimo</th>
+                        <th>Recomendado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RAM</td>
+                        <td>8 GB</td>
+                        <td>16 GB ou mais</td>
+                    </tr>
+                    <tr>
+                        <td>Processador</td>
+                        <td>4 núcleos</td>
+                        <td>6-8 núcleos</td>
+                    </tr>
+                    <tr>
+                        <td>Armazenamento</td>
+                        <td>50 GB</td>
+                        <td>100 GB ou mais</td>
+                    </tr>
+                    <tr>
+                        <td>Virtualização</td>
+                        <td colspan="2">Intel VT-x/AMD-V habilitado na BIOS</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Passo 1 -->
+        <section>
+            <h2>🔧 PASSO 1: Instalação do VirtualBox</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Atualizar o sistema</h3>
+                <div class="command">sudo apt update && sudo apt upgrade -y</div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Instalar VirtualBox</h3>
+                <div class="command">sudo apt install virtualbox virtualbox-ext-pack -y</div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">3</span>Verificar instalação</h3>
+                <div class="command">virtualbox --version</div>
+            </div>
+        </section>
+
+        <!-- Passo 2 -->
+        <section>
+            <h2>🌐 PASSO 2: Download e Instalação do Whonix</h2>
+            
+            <div class="download-box">
+                <h3>📥 Downloads Necessários</h3>
+                <a href="https://www.whonix.org/wiki/VirtualBox" target="_blank" class="download-btn">Whonix Gateway OVA</a>
+                <a href="https://www.kali.org/get-kali/#kali-virtual-machines" target="_blank" class="download-btn">Kali Linux OVA</a>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">1</span>Importar Whonix Gateway</h3>
+                <ol>
+                    <li>Abra o VirtualBox</li>
+                    <li>Clique em <code class="code-inline">Arquivo > Importar Appliance</code></li>
+                    <li>Selecione o arquivo <code class="code-inline">Whonix-Gateway-*.ova</code></li>
+                    <li>Mantenha as configurações padrão e clique em <code class="code-inline">Importar</code></li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Importar Whonix Workstation (Opcional)</h3>
+                <p>Repita o processo acima com o arquivo <code class="code-inline">Whonix-Workstation-*.ova</code></p>
+            </div>
+        </section>
+
+        <!-- Passo 3 -->
+        <section>
+            <h2>🐉 PASSO 3: Instalação do Kali Linux no VirtualBox</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Importar Kali Linux OVA</h3>
+                <ol>
+                    <li>No VirtualBox, clique em <code class="code-inline">Arquivo > Importar Appliance</code></li>
+                    <li>Selecione o arquivo <code class="code-inline">kali-linux-*.ova</code></li>
+                    <li>Clique em <code class="code-inline">Importar</code></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Passo 4 -->
+        <section>
+            <h2>⚙️ PASSO 4: Configuração do Kali Linux Virtual</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Configurações de Hardware</h3>
+                <p>Selecione a VM do Kali Linux e clique em <code class="code-inline">Configurações</code></p>
+                
+                <div class="config-box">
+                    <h4 style="color: #ffd700; margin-bottom: 15px;">🖥️ Sistema</h4>
+                    <div class="config-item">
+                        <span class="config-label">Memória RAM:</span>
+                        <span class="config-value">6144 MB (6 GB)</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Processadores:</span>
+                        <span class="config-value">6 núcleos</span>
+                    </div>
+                </div>
+
+                <div class="config-box">
+                    <h4 style="color: #ffd700; margin-bottom: 15px;">🎨 Vídeo</h4>
+                    <div class="config-item">
+                        <span class="config-label">Memória de Vídeo:</span>
+                        <span class="config-value">128 MB</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Aceleração 3D:</span>
+                        <span class="config-value">Habilitado (opcional)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Configuração de Rede</h3>
+                
+                <div class="config-box">
+                    <h4 style="color: #ffd700; margin-bottom: 15px;">🌐 Rede</h4>
+                    <div class="config-item">
+                        <span class="config-label">Adaptador 1:</span>
+                        <span class="config-value">Habilitado</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Conectado a:</span>
+                        <span class="config-value">Rede Interna</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Nome:</span>
+                        <span class="config-value">Whonix</span>
+                    </div>
+                </div>
+
+                <div class="warning">
+                    IMPORTANTE: O nome da rede interna deve ser exatamente "Whonix" para compatibilidade com o Whonix Gateway.
+                </div>
+            </div>
+        </section>
+
+        <!-- Passo 5 -->
+        <section>
+            <h2>🚀 PASSO 5: Iniciando o Sistema</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Iniciar Whonix Gateway</h3>
+                <ol>
+                    <li>Selecione <code class="code-inline">Whonix-Gateway</code> no VirtualBox</li>
+                    <li>Clique em <code class="code-inline">Iniciar</code></li>
+                    <li>Aguarde o boot completo e a conexão com a rede TOR</li>
+                    <li>Você verá mensagens de status da conexão TOR</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Iniciar Kali Linux Virtual</h3>
+                <ol>
+                    <li>Certifique-se de que o Whonix Gateway está rodando</li>
+                    <li>Selecione a VM do Kali Linux</li>
+                    <li>Clique em <code class="code-inline">Iniciar</code></li>
+                </ol>
+                
+                <div class="config-box">
+                    <h4 style="color: #ffd700; margin-bottom: 15px;">🔑 Credenciais Padrão</h4>
+                    <div class="config-item">
+                        <span class="config-label">Usuário:</span>
+                        <span class="config-value">kali</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Senha:</span>
+                        <span class="config-value">kali</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Passo 6 -->
+        <section>
+            <h2>🔌 PASSO 6: Configuração da Rede no Kali Linux</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Acessar Configurações de Rede</h3>
+                <ol>
+                    <li>No Kali Linux virtualizado, clique no ícone de rede</li>
+                    <li>Selecione <code class="code-inline">Configurações de Rede</code> ou <code class="code-inline">Edit Connections</code></li>
+                    <li>Selecione <code class="code-inline">Wired connection 1</code></li>
+                    <li>Clique em <code class="code-inline">Editar</code> (ícone de engrenagem)</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Configurar IPv4 Manual</h3>
+                <ol>
+                    <li>Vá para a aba <code class="code-inline">IPv4</code></li>
+                    <li>Mude o método de <code class="code-inline">Automático (DHCP)</code> para <code class="code-inline">Manual</code></li>
+                </ol>
+                
+                <div class="config-box">
+                    <h4 style="color: #ffd700; margin-bottom: 15px;">📡 Configurações IPv4</h4>
+                    <div class="config-item">
+                        <span class="config-label">Address (Endereço):</span>
+                        <span class="config-value">10.152.152.3</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Netmask (Máscara):</span>
+                        <span class="config-value">255.255.192.0</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Gateway:</span>
+                        <span class="config-value">10.152.152.10</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">DNS Servers:</span>
+                        <span class="config-value">10.152.152.10</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">3</span>Salvar e Aplicar</h3>
+                <ol>
+                    <li>Clique em <code class="code-inline">Salvar</code></li>
+                    <li>Feche a janela de configurações</li>
+                    <li>Reinicie a máquina virtual:</li>
+                </ol>
+                <div class="command">sudo reboot</div>
+            </div>
+        </section>
+
+        <!-- Passo 7 -->
+        <section>
+            <h2>🔄 PASSO 7: Atualização do Sistema</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Atualizar repositórios e sistema</h3>
+                <div class="command">sudo apt update && sudo apt full-upgrade -y</div>
+                <p style="margin-top: 15px;">Quando solicitado, digite a senha: <code class="code-inline">kali</code></p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Limpar pacotes desnecessários</h3>
+                <div class="command">sudo apt autoremove -y && sudo apt autoclean</div>
+            </div>
+        </section>
+
+        <!-- Passo 8 -->
+        <section>
+            <h2>✅ PASSO 8: Verificação da Conexão TOR</h2>
+            
+            <div class="step">
+                <h3><span class="step-number">1</span>Verificar conexão TOR</h3>
+                <div class="command">curl --socks5-hostname 10.152.152.10:9050 https://check.torproject.org/api/ip</div>
+                <p style="margin-top: 15px;">Ou verifique seu IP público:</p>
+                <div class="command">curl ifconfig.me</div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Testar no navegador</h3>
+                <ol>
+                    <li>Abra o Firefox no Kali Linux</li>
+                    <li>Acesse: <code class="code-inline">https://check.torproject.org</code></li>
+                    <li>Você deve ver: "Congratulations. This browser is configured to use Tor."</li>
+                </ol>
+            </div>
+
+            <div class="success">
+                Se você vir a mensagem de confirmação, seu tráfego está sendo roteado através da rede TOR com sucesso!
+            </div>
+        </section>
+
+        <!-- Comandos Úteis -->
+        <section>
+            <h2>🛠️ Comandos Úteis</h2>
+            
+            <div class="step">
+                <h3>Verificar status da rede</h3>
+                <div class="command">ip addr show</div>
+                <div class="command">ip route show</div>
+            </div>
+
+            <div class="step">
+                <h3>Testar conectividade com o Gateway</h3>
+                <div class="command">ping -c 4 10.152.152.10</div>
+            </div>
+
+            <div class="step">
+                <h3>Verificar DNS</h3>
+                <div class="command">cat /etc/resolv.conf</div>
+            </div>
+
+            <div class="step">
+                <h3>Reinstalar ferramentas do Kali</h3>
+                <div class="command">sudo apt install kali-linux-default -y</div>
+                <p style="margin-top: 10px;">Ou para todas as ferramentas:</p>
+                <div class="command">sudo apt install kali-linux-everything -y</div>
+            </div>
+
+            <div class="step">
+                <h3>Verificar serviços rodando</h3>
+                <div class="command">sudo systemctl list-units --type=service --state=running</div>
+            </div>
+        </section>
+
+        <!-- Segurança Adicional -->
+        <section>
+            <h2>🔒 Dicas de Segurança</h2>
+            
+            <div class="warning">
+                <strong>Nunca revele informações pessoais:</strong> Mesmo com TOR, evite fazer login em contas pessoais ou revelar dados que possam identificá-lo.
+            </div>
+
+            <ul style="margin-top: 20px;">
+                <li>Sempre mantenha o Whonix Gateway rodando antes de iniciar o Kali</li>
+                <li>Não instale plugins ou extensões desnecessárias no navegador</li>
+                <li>Desabilite JavaScript quando possível</li>
+                <li>Use o Tor Browser incluído no Whonix para navegação anônima</li>
+                <li>Mantenha ambos os sistemas sempre atualizados</li>
+                <li>Não faça downloads de fontes não confiáveis</li>
+                <li>Considere usar snapshots do VirtualBox para backup</li>
+            </ul>
+
+            <div class="step">
+                <h3>Criar Snapshot da VM</h3>
+                <ol>
+                    <li>No VirtualBox, selecione a VM do Kali</li>
+                    <li>Vá em <code class="code-inline">Menu > Máquina > Tirar Snapshot</code></li>
+                    <li>Nomeie e descreva o snapshot</li>
+                    <li>Clique em <code class="code-inline">OK</code></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Resolução de Problemas -->
+        <section>
+            <h2>🔧 Resolução de Problemas</h2>
+            
+            <div class="step">
+                <h3>Problema: Sem conexão com a internet</h3>
+                <ol>
+                    <li>Verifique se o Whonix Gateway está rodando</li>
+                    <li>Confirme as configurações de rede IPv4</li>
+                    <li>Teste a conectividade: <code class="code-inline">ping 10.152.152.10</code></li>
+                    <li>Reinicie a conexão de rede:
+                        <div class="command">sudo systemctl restart NetworkManager</div>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>Problema: TOR não conecta</h3>
+                <ol>
+                    <li>No Whonix Gateway, verifique os logs do TOR</li>
+                    <li>Aguarde alguns minutos - a conexão pode demorar</li>
+                    <li>Reinicie o Whonix Gateway se necessário</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>Problema: Sistema lento</h3>
+                <ol>
+                    <li>Aumente a RAM alocada (mínimo 6 GB recomendado)</li>
+                    <li>Adicione mais núcleos de CPU</li>
+                    <li>Feche aplicações desnecessárias no host</li>
+                    <li>Considere usar SSD ao invés de HDD</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Arquitetura do Sistema -->
+        <section>
+            <h2>🏗️ Arquitetura do Sistema</h2>
+            
+            <div class="config-box">
+                <pre style="color: #00ff41; overflow-x: auto;">
+┌─────────────────────────────────────────────────────┐
+│         HOST: Kali Linux (Sistema Principal)       │
+│                                                     │
+│  ┌───────────────────────────────────────────────┐ │
+│  │           VirtualBox                          │ │
+│  │                                               │ │
+│  │  ┌──────────────────┐  ┌──────────────────┐  │ │
+│  │  │ Whonix Gateway   │  │  Kali Linux VM   │  │ │
+│  │  │                  │  │                  │  │ │
+│  │  │ IP: 10.152.152.10│◄─┤IP: 10.152.152.3  │  │ │
+│  │  │                  │  │                  │  │ │
+│  │  │  ┌─────────┐     │  │                  │  │ │
+│  │  │  │   TOR   │     │  │  Todas as        │  │ │
+│  │  │  └────┬────┘     │  │  ferramentas     │  │ │
+│  │  │       │          │  │  de pentest      │  │ │
+│  │  └───────┼──────────┘  └──────────────────┘  │ │
+│  │          │                                    │ │
+│  └──────────┼────────────────────────────────────┘ │
+│             │                                      │
+└─────────────┼──────────────────────────────────────┘
+              │
+              ▼
+         Internet via TOR
+                </pre>
+            </div>
+        </section>
+
+        <!-- Conclusão -->
+        <section>
+            <h2>🎯 Conclusão</h2>
+            <div class="success">
+                Parabéns! Você configurou com sucesso um ambiente de pentest com anonimato através da rede TOR. Todo o tráfego do Kali Linux virtualizado agora passa pelo Whonix Gateway antes de chegar à internet.
+            </div>
+            
+            <p style="margin-top: 20px; color: #d0d0d0;">
+                Este setup oferece:
+            </p>
+            <ul>
+                <li>✓ Anonimato através da rede TOR</li>
+                <li>✓ Isolamento entre host e VMs</li>
+                <li>✓ Todas as ferramentas do Kali Linux</li>
+                <li>✓ Proteção contra vazamento de IP</li>
+                <li>✓ Ambiente seguro para testes de segurança</li>
+            </ul>
+
+            <div class="warning">
+                LEMBRETE LEGAL: Use este ambiente apenas para fins educacionais, em redes que você tem permissão para testar, ou em laboratórios controlados. O uso indevido pode ser ilegal.
+            </div>
+        </section>
+
+        <!-- Recursos Adicionais -->
+        <section>
+            <h2>📚 Recursos Adicionais</h2>
+            <ul>
+                <li><a href="https://www.kali.org/docs/" target="_blank">Documentação Oficial do Kali Linux</a></li>
+                <li><a href="https://www.whonix.org/wiki/Documentation" target="_blank">Documentação do Whonix</a></li>
+                <li><a href="https://www.torproject.org/" target="_blank">Projeto TOR</a></li>
+                <li><a href="https://www.virtualbox.org/manual/" target="_blank">Manual do VirtualBox</a></li>
+            </ul>
+        </section>
+
+        <footer class="footer">
+            <p>🐉 Tutorial Kali Linux + Whonix Gateway</p>
+            <p>Criado com propósitos educacionais | Use com responsabilidade</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                © 2024 - Segurança e Privacidade em Primeiro Lugar
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
